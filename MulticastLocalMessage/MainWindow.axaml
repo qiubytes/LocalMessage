@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+		Width="600"
+		Height="400"
+        x:Class="MulticastLocalMessage.MainWindow"
+		x:CompileBindings="False"
+		WindowStartupLocation="CenterScreen"
+        Title="内网消息工具">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" ></RowDefinition>
+			<RowDefinition Height="Auto" ></RowDefinition>
+			<RowDefinition Height="*" ></RowDefinition>
+			<RowDefinition Height="Auto" ></RowDefinition>
+			<RowDefinition Height="*" ></RowDefinition>
+			<RowDefinition Height="Auto" ></RowDefinition>
+		</Grid.RowDefinitions>
+		<!--第一行-->
+		<StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.ColumnSpan="3"   >
+			<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">加入组播</Button>
+			<Label VerticalAlignment="Center">状态：</Label>
+			<Label Name="label_zt"  Foreground="Red" VerticalAlignment="Center">未加入</Label>
+		</StackPanel>
+		<!--第二行-->
+		<Label Grid.Row="1" Grid.ColumnSpan="3">发送消息：</Label>
+		<TextBox Grid.Row="2" Grid.ColumnSpan="3"  Margin="0,6,0,0" Name="txt_send" ></TextBox>
+		<Label Grid.Row="3" Grid.ColumnSpan="3">接收消息：</Label>
+		<TextBox Grid.Row="4" Grid.ColumnSpan="3"  Margin="0,6,0,0" Name="txt_rec" ></TextBox>
+		<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" >
+			<Button Name="btn_send" Click="btn_send_Click_1" >发送</Button>
+			<Button Name="btn_close" Margin="12,0,0,0" Click="Button_btn_close_Click">关闭</Button>
+		</StackPanel>
+	</Grid>
+</Window>
