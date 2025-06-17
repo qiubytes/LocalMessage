@@ -51,6 +51,7 @@ namespace MulticastLocalMessage
                 udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);//允许多个套接字绑定相同端口
                 udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MulticastPort));
                 // 加入组播组
+                // udpClient.MulticastLoopback = false;
                 udpClient.JoinMulticastGroup(IPAddress.Parse(MulticastAddress));
                 Console.WriteLine($"已加入组播组 {MulticastAddress}:{MulticastPort}");
 
