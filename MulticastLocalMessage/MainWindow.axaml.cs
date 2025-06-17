@@ -27,13 +27,13 @@ namespace MulticastLocalMessage
             //接收
             _multicastHelper.Received += (sender, e) =>
             {
-                txt_rec.Text = e.Content;
+                txt_rec.Text += $"\r\n------接收消息---来自{e.OriginIp}---\r\n" + $"{e.Content}";
             };
             //加入
             _multicastHelper.Joined += (sender, e) =>
             {
                 label_zt.Content = "已加入";
-                btn_send.IsEnabled = true; 
+                btn_send.IsEnabled = true;
             };
             _multicastHelper.Exited += (sender, e) =>
             {
@@ -65,6 +65,9 @@ namespace MulticastLocalMessage
         private void btn_send_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             _multicastHelper.SendMulticastMessage(txt_send.Text);
+
+            txt_rec.Text += "\r\n------已发送消息------\r\n" + txt_send.Text;
+            txt_rec.ScrollToLine(txt_rec.GetLineCount() - 1);
         }
     }
 }
