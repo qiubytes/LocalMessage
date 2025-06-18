@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using MulticastLocalMessage.ViewModel.MainWindow;
 using System.Linq;
 
 namespace MulticastLocalMessage
@@ -14,6 +15,14 @@ namespace MulticastLocalMessage
         {
             InitializeComponent();
             _multicastHelper = new MulticastHelper();
+            MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
+            mainWindowViewModel.Neighbourhoods = new System.Collections.ObjectModel.ObservableCollection<Neighbourhood>();
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.2" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.3" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.4" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.8" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.10" });
+            this.DataContext = mainWindowViewModel;
         }
 
         private void Button_btn_close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

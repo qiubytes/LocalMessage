@@ -50,7 +50,25 @@
 				</Grid>
 			</TabItem>
 			<TabItem Header="文件">
-				<TextBlock Margin="5">This is tab 2 content</TextBlock>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"></RowDefinition>
+						<RowDefinition Height="*"></RowDefinition>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition></ColumnDefinition>
+						<ColumnDefinition></ColumnDefinition>
+					</Grid.ColumnDefinitions>
+					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">局域网用户</Label>
+					<ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Name}"/>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Grid>
+
 			</TabItem>
 			<TabItem Header="关于">
 				<TextBlock Margin="5">This is tab 3 content</TextBlock>
