@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Threading;
+using MulticastLocalMessage.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,17 +8,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using MulticastLocalMessage.Events;
 
 namespace MulticastLocalMessage
 {
     /// <summary>
-    /// 消息群发
+    /// 文件发送（根据组播发现邻居，根据Tcp直连到对方进行文件发送）
     /// </summary>
-    public class MulticastHelper
+    public class FileMulticastHelper
     {
-        private readonly string MulticastAddress = "239.255.255.250"; // 组播地址
+        private readonly string MulticastAddress = "239.255.255.249"; // 组播地址
         private readonly int MulticastPort = 5000; // 组播端口
         private bool isRunning = true;
         private UdpClient udpClient;
@@ -33,7 +33,7 @@ namespace MulticastLocalMessage
         /// </summary>
         public EventHandler<EventArgs>? Exited;
 
-        public MulticastHelper()
+        public FileMulticastHelper()
         {
             udpClient = new UdpClient();
         }

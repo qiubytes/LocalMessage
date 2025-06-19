@@ -53,20 +53,37 @@
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"></RowDefinition>
+						<RowDefinition Height="Auto"></RowDefinition>
 						<RowDefinition Height="*"></RowDefinition>
+						<RowDefinition Height="Auto"></RowDefinition>
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition></ColumnDefinition>
 						<ColumnDefinition></ColumnDefinition>
 					</Grid.ColumnDefinitions>
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">局域网用户</Label>
-					<ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
+					<StackPanel Grid.Column="0" Grid.Row="0" 
+								Grid.ColumnSpan="2"  HorizontalAlignment="Center"
+								Orientation="Horizontal"   >
+						<Button Margin="0,6,6,0"  >扫描局域网用户</Button>
+						<Button Margin="0,6,6,0" >发送文件</Button>
+						<Button Margin="0,6,6,0" >打开文件夹</Button>
+					</StackPanel>
+					<Label Grid.Column="0" Grid.Row="1"
+						   Margin="0,6,0,6"
+						   Grid.ColumnSpan="2" >局域网用户</Label>
+					<ListBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<TextBlock Text="{Binding Name}"/>
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 					</ListBox>
+					<StackPanel Orientation="Horizontal"  Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="2"  HorizontalAlignment="Center" >
+						<Label VerticalAlignment="Center">是否接收xxxx的文件xxxx</Label>
+						<Button Margin="0,5,5,0">接受</Button>
+						<Button Margin="0,5,5,0">拒绝</Button>
+						<ProgressBar></ProgressBar>
+					</StackPanel>
 				</Grid>
 
 			</TabItem>
