@@ -3,17 +3,45 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using MulticastLocalMessage.MsgDto;
+using MulticastLocalMessage.Servers;
+using MulticastLocalMessage.ViewModel.MainWindow;
+using System;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MulticastLocalMessage
 {
     public partial class MainWindow : Window
     {
         private readonly MulticastHelper _multicastHelper;
+        private readonly FileReceiverServer fileReceiverServer;
+        private CancellationTokenSource fileserverCTS;
         public MainWindow()
         {
             InitializeComponent();
             _multicastHelper = new MulticastHelper();
+            MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
+            mainWindowViewModel.Neighbourhoods = new System.Collections.ObjectModel.ObservableCollection<Neighbourhood>();
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.2" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.3" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.4" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.8" });
+            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.10" });
+            this.DataContext = mainWindowViewModel;
+
+            if (Design.IsDesignMode) return;
+            //文件服务
+            fileserverCTS = new CancellationTokenSource();
+            string filesurl = Path.Combine(AppContext.BaseDirectory, "files");
+            fileReceiverServer = new FileReceiverServer(8082, filesurl);
+            Task.Run(async
+                () =>
+            {
+                await fileReceiverServer.Start();
+            }, fileserverCTS.Token);
         }
 
         private void Button_btn_close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -70,7 +98,12 @@ namespace MulticastLocalMessage
 
         private void btn_send_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            _multicastHelper.SendMulticastMessage(txt_send.Text);
+            MessageDataTransfeObject mdtso = new MessageDataTransfeObject()
+            {
+                MsgType = "1",
+                Message = txt_send.Text
+            };
+            _multicastHelper.SendMulticastMessage(mdtso);
 
             txt_rec.Text += "\r\n------已发送消息------\r\n" + txt_send.Text;
             //txt_rec.ScrollToLine(txt_rec.GetLineCount() - 1);

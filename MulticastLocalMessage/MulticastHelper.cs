@@ -1,16 +1,22 @@
-﻿using System;
+﻿using Avalonia.Threading;
+using MulticastLocalMessage.Events;
+using MulticastLocalMessage.MsgDto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using MulticastLocalMessage.Events;
 
 namespace MulticastLocalMessage
 {
+    /// <summary>
+    /// 消息群发
+    /// </summary>
     public class MulticastHelper
     {
         private readonly string MulticastAddress = "239.255.255.250"; // 组播地址
@@ -77,10 +83,11 @@ namespace MulticastLocalMessage
         /// 发送消息
         /// </summary>
         /// <param name="message"></param>
-        public void SendMulticastMessage(string message)
+        public void SendMulticastMessage(MessageDataTransfeObject msgobj)
         {
             try
             {
+                string message = JsonSerializer.Serialize(msgobj);
                 byte[] data = Encoding.UTF8.GetBytes(message);
                 IPEndPoint multicastEndpoint = new IPEndPoint(IPAddress.Parse(MulticastAddress), MulticastPort);
                 udpClient.Send(data, data.Length, multicastEndpoint);
@@ -103,12 +110,17 @@ namespace MulticastLocalMessage
                     IPEndPoint remoteEndpoint = null;
                     byte[] receivedData = udpClient.Receive(ref remoteEndpoint);
                     string receivedMessage = Encoding.UTF8.GetString(receivedData);
-                    Console.WriteLine($"收到来自 {remoteEndpoint} 的消息: {receivedMessage}");
-                    //接收事件
-                    Dispatcher.UIThread.Post(() =>
+                    MessageDataTransfeObject mdtso = JsonSerializer.Deserialize<MessageDataTransfeObject>(receivedMessage);
+                    Console.WriteLine($"收到来自 {remoteEndpoint} 的消息: {mdtso.Message}");
+                    if (mdtso.MsgType == "1")
                     {
-                        Received?.Invoke(this, new ReceiveMsg() { OriginIp = remoteEndpoint.ToString(), Content = receivedMessage });
-                    });
+                        //接收事件
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            Received?.Invoke(this, new ReceiveMsg() { OriginIp = remoteEndpoint.ToString(), Content = mdtso.Message });
+                        });
+                    }
+
                 }
             }
             catch (SocketException ex) when (ex.SocketErrorCode == SocketError.Interrupted)

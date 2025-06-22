@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36203.30
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MulticastLocalMessage", "MulticastLocalMessage\MulticastLocalMessage.csproj", "{812C38FE-796B-BFFB-CF70-49547AD75E87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{27077424-7B12-4938-9467-50D3F4499326}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{812C38FE-796B-BFFB-CF70-49547AD75E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{812C38FE-796B-BFFB-CF70-49547AD75E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{812C38FE-796B-BFFB-CF70-49547AD75E87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27077424-7B12-4938-9467-50D3F4499326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27077424-7B12-4938-9467-50D3F4499326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27077424-7B12-4938-9467-50D3F4499326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27077424-7B12-4938-9467-50D3F4499326}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

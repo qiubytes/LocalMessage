@@ -10,33 +10,87 @@
 		WindowStartupLocation="CenterScreen"
         Title="内网消息工具">
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto"></ColumnDefinition>
-			<ColumnDefinition Width="Auto"></ColumnDefinition>
-			<ColumnDefinition Width="*"></ColumnDefinition>
-		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" ></RowDefinition>
-			<RowDefinition Height="Auto" ></RowDefinition>
 			<RowDefinition Height="*" ></RowDefinition>
-			<RowDefinition Height="Auto" ></RowDefinition>
-			<RowDefinition Height="*" ></RowDefinition>
-			<RowDefinition Height="Auto" ></RowDefinition>
 		</Grid.RowDefinitions>
-		<!--第一行-->
-		<StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.ColumnSpan="3"   HorizontalAlignment="Center" Margin="0,6,0,0"  >
-			<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">加入组播</Button>
-			<Label VerticalAlignment="Center">状态：</Label>
-			<Label Name="label_zt"  Foreground="Red" VerticalAlignment="Center">未加入</Label>
-		</StackPanel>
-		<!--第二行-->
-		<Label Grid.Row="1" Grid.ColumnSpan="3" Margin="6,0,6,0">发送消息：</Label>
-		<TextBox Grid.Row="2" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_send" ></TextBox>
-		<Label Grid.Row="3" Grid.ColumnSpan="3" Margin="6,0,6,0">接收消息：</Label>
-		<TextBox Grid.Row="4" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_rec" ></TextBox>
-		<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="6,0,6,0"  Orientation="Horizontal" HorizontalAlignment="Right" >
-			<Button Name="btn_send" Margin="0,6,0,6" Click="btn_send_Click_1" >发送</Button>
-			<Button Name="btn_close" Margin="12,6,0,6" Click="Button_btn_close_Click">关闭</Button>
-		</StackPanel>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" ></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<TabControl Grid.Column="0" Grid.Row="0" Margin="5">
+			<TabItem Header="消息">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"></ColumnDefinition>
+						<ColumnDefinition Width="Auto"></ColumnDefinition>
+						<ColumnDefinition Width="*"></ColumnDefinition>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" ></RowDefinition>
+						<RowDefinition Height="Auto" ></RowDefinition>
+						<RowDefinition Height="*" ></RowDefinition>
+						<RowDefinition Height="Auto" ></RowDefinition>
+						<RowDefinition Height="*" ></RowDefinition>
+						<RowDefinition Height="Auto" ></RowDefinition>
+					</Grid.RowDefinitions>
+					<!--第一行-->
+					<StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.ColumnSpan="3"   HorizontalAlignment="Center" Margin="0,6,0,0"  >
+						<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">加入组播</Button>
+						<Label VerticalAlignment="Center">状态：</Label>
+						<Label Name="label_zt"  Foreground="Red" VerticalAlignment="Center">未加入</Label>
+					</StackPanel>
+					<!--第二行-->
+					<Label Grid.Row="1" Grid.ColumnSpan="3" Margin="6,0,6,0">发送消息：</Label>
+					<TextBox Grid.Row="2" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_send" ></TextBox>
+					<Label Grid.Row="3" Grid.ColumnSpan="3" Margin="6,0,6,0">接收消息：</Label>
+					<TextBox Grid.Row="4" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_rec" ></TextBox>
+					<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="6,0,6,0"  Orientation="Horizontal" HorizontalAlignment="Right" >
+						<Button Name="btn_send" Margin="0,6,0,6" Click="btn_send_Click_1" >发送</Button>
+						<Button Name="btn_close" Margin="12,6,0,6" Click="Button_btn_close_Click">关闭</Button>
+					</StackPanel>
+				</Grid>
+			</TabItem>
+			<TabItem Header="文件">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"></RowDefinition>
+						<RowDefinition Height="Auto"></RowDefinition>
+						<RowDefinition Height="*"></RowDefinition>
+						<RowDefinition Height="Auto"></RowDefinition>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition></ColumnDefinition>
+						<ColumnDefinition></ColumnDefinition>
+					</Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0" Grid.Row="0" 
+								Grid.ColumnSpan="2"  HorizontalAlignment="Center"
+								Orientation="Horizontal"   >
+						<Button Margin="0,6,6,0"  >扫描局域网用户</Button>
+						<Button Margin="0,6,6,0" >发送文件</Button>
+						<Button Margin="0,6,6,0" >打开文件夹</Button>
+					</StackPanel>
+					<Label Grid.Column="0" Grid.Row="1"
+						   Margin="0,6,0,6"
+						   Grid.ColumnSpan="2" >局域网用户</Label>
+					<ListBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Name}"/>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+					<StackPanel Orientation="Horizontal"  Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="2"  HorizontalAlignment="Center" >
+						<Label VerticalAlignment="Center">是否接收xxxx的文件xxxx</Label>
+						<Button Margin="0,5,5,0">接受</Button>
+						<Button Margin="0,5,5,0">拒绝</Button>
+						<ProgressBar></ProgressBar>
+					</StackPanel>
+				</Grid>
+
+			</TabItem>
+			<TabItem Header="关于">
+				<TextBlock Margin="5">This is tab 3 content</TextBlock>
+			</TabItem>
+		</TabControl>
 	</Grid>
+
 </Window>
