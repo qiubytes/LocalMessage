@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MulticastLocalMessage.MsgDto.impls
 {
     /// <summary>
-    /// tab1 组播群发消息
+    ///  1、群发组播消息
     /// </summary>
     public class MultiCastMsg
     {
