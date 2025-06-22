@@ -21,6 +21,7 @@ namespace MulticastLocalMessage
     {
         private readonly UdpClientWithMulticast udpclient;
         private readonly FileReceiverServer fileReceiverServer;
+        private readonly FileSenderClient  fileSenderClient;
         private CancellationTokenSource fileserverCTS;
         public MainWindow()
         {
@@ -36,6 +37,8 @@ namespace MulticastLocalMessage
             this.DataContext = mainWindowViewModel;
 
             if (Design.IsDesignMode) return;
+            //发送文件客户端
+            fileSenderClient = new FileSenderClient();
             //文件服务
             fileserverCTS = new CancellationTokenSource();
             string filesurl = Path.Combine(AppContext.BaseDirectory, "files");
@@ -45,6 +48,10 @@ namespace MulticastLocalMessage
             {
                 await fileReceiverServer.Start();
             }, fileserverCTS.Token);
+            //隐藏最下面的提示栏
+            FileTipsStackPanel.IsVisible = false;
+
+
         }
 
         private void Button_btn_close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -85,6 +92,39 @@ namespace MulticastLocalMessage
                 {
                     mwvm.Neighbourhoods.Add(new Neighbourhood() { Name = e.NeighbourhoodIp });
                 }
+            };
+            //文件接收进度显示
+            fileReceiverServer.FileProgress += (sender, e) =>
+            {
+                btn_file_accept.IsVisible = false;
+                btn_file_reject.IsVisible = false;
+                if (e.state != "传输完成")
+                {
+                    FileTipsStackPanel.IsVisible = true;
+                }
+                //else
+                //{
+                //    FileTipsStackPanel.IsVisible = false;
+                //}
+                int current = Convert.ToInt32(Convert.ToDouble(e.currentBytes) / e.totalBytes) * 100;
+                FileMsgTips.Content = e.msg + e.state + current.ToString() + "%";
+                progressbar_file.Value = current;
+            };
+            fileSenderClient.SendProgress += (sender, e) =>
+            {
+                btn_file_accept.IsVisible = false;
+                btn_file_reject.IsVisible = false;
+                if (e.state != "传输完成")
+                {
+                    FileTipsStackPanel.IsVisible = true;
+                }
+                //else
+                //{
+                //    FileTipsStackPanel.IsVisible = false;
+                //}
+                int current = Convert.ToInt32(Convert.ToDouble(e.currentBytes) / e.totalBytes) * 100;
+                FileMsgTips.Content = e.msg + e.state + current.ToString() + "%";
+                progressbar_file.Value = current;
             };
             btn_send.IsEnabled = false;
         }
@@ -152,11 +192,11 @@ namespace MulticastLocalMessage
             string? filepath = await Utils.SelectSingleFile(this);
             if (!string.IsNullOrEmpty(filepath))
             {
-                FileSenderClient client = new FileSenderClient();
+                
                 Neighbourhood neighbour = (Neighbourhood)NeighbourHoodList.SelectedItem;
                 if (neighbour != null)
                 {
-                    await client.SendFile(neighbour.Name, 8082, filepath); 
+                    await fileSenderClient.SendFile(neighbour.Name, 8082, filepath);
                 }
             }
         }

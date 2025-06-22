@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Threading;
+using MulticastLocalMessage.Events;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,10 +14,11 @@ namespace MulticastLocalMessage.Servers
     public class FileReceiverServer
     {
         public const int BufferSize = 8192; // 8KB缓冲区
-        public const   int HeaderSize = 256;  // 头部固定256字节，包含文件名和文件长度
+        public const int HeaderSize = 256;  // 头部固定256字节，包含文件名和文件长度
 
         private readonly int _port;
         private readonly string _saveDirectory;
+        public EventHandler<FileSendReceiveProgress> FileProgress;
 
         public FileReceiverServer(int port, string saveDirectory)
         {
@@ -50,8 +53,8 @@ namespace MulticastLocalMessage.Servers
                         {
                             Console.WriteLine("消息头格式不正确");
                             continue;
-                        } 
-                        
+                        }
+
                         //解析头部信息
                         // 1. 找到分隔符'|'的位置
                         int separatorIndex = Array.IndexOf(headerBuffer, (byte)'|');
@@ -98,10 +101,30 @@ namespace MulticastLocalMessage.Servers
                                 totalBytesRead += bytesRead;
 
                                 // 显示进度
-                                Console.Write($"\rProgress: {totalBytesRead * 100 / fileLength}%");
+                                Dispatcher.UIThread.Post(() =>
+                                {
+                                    FileProgress?.Invoke(this, new FileSendReceiveProgress()
+                                    {
+                                        currentBytes = totalBytesRead,
+                                        totalBytes = fileLength,
+                                        state = "传输中",
+                                        msg = $"来自{client.Client.RemoteEndPoint.ToString()}的文件:{fileName}"
+                                    });
+                                });
+                                // Console.Write($"\rProgress: {totalBytesRead * 100 / fileLength}%");
                             }
-
-                            Console.WriteLine("\nFile received successfully.");
+                            //传输完成
+                            Dispatcher.UIThread.Post(() =>
+                            {
+                                FileProgress?.Invoke(this, new FileSendReceiveProgress()
+                                {
+                                    currentBytes = totalBytesRead,
+                                    totalBytes = fileLength,
+                                    state = "传输完成",
+                                    msg = $"来自{client.Client.RemoteEndPoint.ToString()}的文件:{fileName}"
+                                });
+                            });
+                            //Console.WriteLine("\nFile received successfully.");
                         }
                     }
                 }
