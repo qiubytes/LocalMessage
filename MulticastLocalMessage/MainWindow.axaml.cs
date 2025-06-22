@@ -132,6 +132,8 @@ namespace MulticastLocalMessage
 
         private void btn_scan_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            MainWindowViewModel mwvm = (MainWindowViewModel)this.DataContext;
+            mwvm?.Neighbourhoods.Clear();
             MessageDataTransfeObject mdtso = new MessageDataTransfeObject()
             {
                 MsgType = "2",
