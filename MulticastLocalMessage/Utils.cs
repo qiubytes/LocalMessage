@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace MulticastLocalMessage
 {
+    /// <summary>
+    /// 辅助工具类
+    /// </summary>
     public class Utils
     {
         /// <summary>
@@ -79,6 +84,42 @@ namespace MulticastLocalMessage
                 // 处理异常，如显示错误消息
                 Console.WriteLine($"无法打开文件夹: {ex.Message}");
             }
+        }
+        /// <summary>
+        /// 选择文件
+        /// </summary>
+        /// <param name="window"></param>
+        /// <returns></returns>
+        public static async Task<string?> SelectSingleFile(Window window)
+        {
+            // 获取 TopLevel 引用 (通常是当前窗口)
+            var topLevel = TopLevel.GetTopLevel(window);
+
+            if (topLevel != null)
+            {
+                // 配置文件选择选项
+                var options = new FilePickerOpenOptions
+                {
+                    Title = "选择文件",
+                    AllowMultiple = false,
+                    FileTypeFilter = new[]
+                    {
+
+                        new FilePickerFileType("所有文件")
+                        {
+                            Patterns = new[] { "*" }
+                        }
+                     }
+                };
+
+                // 打开文件选择对话框
+                var files = await topLevel.StorageProvider.OpenFilePickerAsync(options);
+
+                // 返回第一个选择的文件路径
+                return files.FirstOrDefault()?.Path.LocalPath;
+            }
+
+            return null;
         }
     }
 }

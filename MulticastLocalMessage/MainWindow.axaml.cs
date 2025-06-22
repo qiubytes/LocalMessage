@@ -144,5 +144,19 @@ namespace MulticastLocalMessage
         {
             Utils.OpenFolderInFileManager(Path.Combine(AppContext.BaseDirectory, "files"));
         }
+
+        private async void btn_sendfile_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            string? filepath = await Utils.SelectSingleFile(this);
+            if (!string.IsNullOrEmpty(filepath))
+            {
+                FileSenderClient client = new FileSenderClient();
+                Neighbourhood neighbour = (Neighbourhood)NeighbourHoodList.SelectedItem;
+                if (neighbour != null)
+                {
+                    await client.SendFile(neighbour.Name, 8082, filepath); 
+                }
+            }
+        }
     }
 }

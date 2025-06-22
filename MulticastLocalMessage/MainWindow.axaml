@@ -65,13 +65,14 @@
 								Grid.ColumnSpan="2"  HorizontalAlignment="Center"
 								Orientation="Horizontal"   >
 						<Button Margin="0,6,6,0" Name="btn_scan" Click="btn_scan_click" >发现邻居</Button>
-						<Button Margin="0,6,6,0" >发送文件</Button>
+						<Button Margin="0,6,6,0" Name="btn_sendfile" Click="btn_sendfile_click" >发送文件</Button>
 						<Button Margin="0,6,6,0" Name="btn_openfolder" Click="btn_openfolder_click" >打开文件夹</Button>
 					</StackPanel>
 					<Label Grid.Column="0" Grid.Row="1"
 						   Margin="0,6,0,6"
 						   Grid.ColumnSpan="2" >邻居列表</Label>
-					<ListBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
+					<ListBox Grid.Column="0" Grid.Row="2" 
+							 Name="NeighbourHoodList" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<TextBlock Text="{Binding Name}"/>
