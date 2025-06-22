@@ -3,14 +3,21 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using MulticastLocalMessage.Servers;
 using MulticastLocalMessage.ViewModel.MainWindow;
+using System;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MulticastLocalMessage
 {
     public partial class MainWindow : Window
     {
         private readonly MulticastHelper _multicastHelper;
+        private readonly FileReceiverServer fileReceiverServer;
+        private CancellationTokenSource fileserverCTS;
         public MainWindow()
         {
             InitializeComponent();
@@ -23,6 +30,16 @@ namespace MulticastLocalMessage
             mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.8" });
             mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.10" });
             this.DataContext = mainWindowViewModel;
+
+            //文件服务
+            fileserverCTS= new CancellationTokenSource();
+            string filesurl = Path.Combine(AppContext.BaseDirectory, "files");
+            fileReceiverServer = new FileReceiverServer(8082, filesurl);
+            Task.Run(async
+                () =>
+            {
+                await fileReceiverServer.Start();
+            }, fileserverCTS.Token);
         }
 
         private void Button_btn_close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
