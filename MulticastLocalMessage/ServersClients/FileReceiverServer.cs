@@ -48,22 +48,10 @@ namespace MulticastLocalMessage.Servers
 
                         if (bytesRead < HeaderSize)
                         {
-                            Console.WriteLine("Invalid header received.");
+                            Console.WriteLine("消息头格式不正确");
                             continue;
-                        }
-
-                        //// 解析头部信息
-                        //var header = Encoding.UTF8.GetString(headerBuffer).TrimEnd('\0');
-                        //var parts = header.Split('|');
-
-                        //if (parts.Length != 2)
-                        //{
-                        //    Console.WriteLine("Invalid header format.");
-                        //    continue;
-                        //}
-
-                        //var fileName = parts[0];
-                        //var fileLength = long.Parse(parts[1]);
+                        } 
+                        
                         //解析头部信息
                         // 1. 找到分隔符'|'的位置
                         int separatorIndex = Array.IndexOf(headerBuffer, (byte)'|');
