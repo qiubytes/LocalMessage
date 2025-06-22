@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +35,50 @@ namespace MulticastLocalMessage
             }
 
             return null;
+        }
+        /// <summary>
+        /// 打开指定文件夹
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        public static void OpenFolderInFileManager(string folderPath)
+        {
+            if (!Directory.Exists(folderPath))
+            {
+                throw new DirectoryNotFoundException($"文件夹不存在: {folderPath}");
+            }
+
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Process.Start("explorer.exe", $"\"{folderPath}\"");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", $"\"{folderPath}\"");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // 尝试多个可能的文件管理器
+                    try
+                    {
+                        Process.Start("xdg-open", $"\"{folderPath}\"");
+                    }
+                    catch
+                    {
+                        try { Process.Start("nautilus", $"\"{folderPath}\""); } catch { }
+                        try { Process.Start("dolphin", $"\"{folderPath}\""); } catch { }
+                        try { Process.Start("thunar", $"\"{folderPath}\""); } catch { }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 处理异常，如显示错误消息
+                Console.WriteLine($"无法打开文件夹: {ex.Message}");
+            }
         }
     }
 }

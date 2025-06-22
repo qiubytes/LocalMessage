@@ -139,5 +139,10 @@ namespace MulticastLocalMessage
             };
             udpclient.SendMulticastMessage(mdtso);
         }
+
+        private void btn_openfolder_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            Utils.OpenFolderInFileManager(Path.Combine(AppContext.BaseDirectory, "files"));
+        }
     }
 }
