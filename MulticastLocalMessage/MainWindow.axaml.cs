@@ -64,6 +64,7 @@ namespace MulticastLocalMessage
         protected override void OnLoaded(RoutedEventArgs e)
         {
             base.OnLoaded(e);
+            if (Design.IsDesignMode) return;
             //½ÓÊÕ
             udpclient.Received += (sender, e) =>
             {

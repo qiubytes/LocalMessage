@@ -90,8 +90,8 @@
 				</Grid>
 
 			</TabItem>
-			<TabItem Header="关于">
-				<TextBlock Margin="5">This is tab 3 content</TextBlock>
+			<TabItem Header="关于本程序">
+				<TextBlock Margin="5">作者：邱于涵,yuhandev@163.com</TextBlock>
 			</TabItem>
 		</TabControl>
 	</Grid>
