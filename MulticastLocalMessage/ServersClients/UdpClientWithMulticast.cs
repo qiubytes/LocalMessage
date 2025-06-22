@@ -59,11 +59,17 @@ namespace MulticastLocalMessage.ServersClients
 
                 // 创建UDP客户端并绑定到任意可用端口
                 udpClient = new UdpClient();
+                /// udpClient.Ttl = 32;//设置TTL 
                 udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);//允许多个套接字绑定相同端口
-                udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MulticastPort));
+                udpClient.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 32);  // 设置TTL(udpclient设置不生效)
+
+                //写固定IP为了指定网卡
+                udpClient.Client.Bind(new IPEndPoint(Utils.GetPrimaryIPv4Address(), MulticastPort));
+
+                //udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MulticastPort));
                 // 加入组播组
                 // udpClient.MulticastLoopback = false;
-                udpClient.JoinMulticastGroup(IPAddress.Parse(MulticastAddress));
+                udpClient.JoinMulticastGroup(IPAddress.Parse(MulticastAddress), localAddress: Utils.GetPrimaryIPv4Address());//指定IP（网卡），组播订阅可能绑定到错误的网卡
                 Console.WriteLine($"已加入组播组 {MulticastAddress}:{MulticastPort}");
 
                 Joined?.Invoke(this, EventArgs.Empty);

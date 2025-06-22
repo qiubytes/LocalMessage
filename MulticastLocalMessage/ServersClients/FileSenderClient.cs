@@ -1,4 +1,6 @@
-﻿using MulticastLocalMessage.Servers;
+﻿using Avalonia.Threading;
+using MulticastLocalMessage.Events;
+using MulticastLocalMessage.Servers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +16,10 @@ namespace MulticastLocalMessage.ServersClients
     /// </summary>
     public class FileSenderClient
     {
+        /// <summary>
+        /// 发送文件进度 
+        /// </summary>
+        public EventHandler<FileSendReceiveProgress> SendProgress;
         public async Task SendFile(string serverIp, int port, string filePath)
         {
             try
@@ -58,7 +64,29 @@ namespace MulticastLocalMessage.ServersClients
                             totalBytesSent += bytesRead;
 
                             // 显示进度
-                            Console.Write($"进度: {totalBytesSent * 100 / fileLength}%");
+                            Dispatcher.UIThread.Post(() =>
+                            {
+                                SendProgress?.Invoke(this, new FileSendReceiveProgress()
+                                {
+                                    currentBytes = totalBytesSent,
+                                    totalBytes = fileLength,
+                                    state = "传输中",
+                                    msg = $"发送给{serverIp}的文件:{fileName}"
+                                });
+                            });
+                            // 显示进度
+                            //传输完成
+                            Dispatcher.UIThread.Post(() =>
+                            {
+                                SendProgress?.Invoke(this, new FileSendReceiveProgress()
+                                {
+                                    currentBytes = totalBytesSent,
+                                    totalBytes = fileLength,
+                                    state = "传输完成",
+                                    msg = $"发送给{serverIp}的文件:{fileName}"
+                                });
+                            });
+                            //Console.Write($"进度: {totalBytesSent * 100 / fileLength}%");
                         }
 
                         Console.WriteLine("发送文件成功");
