@@ -43,7 +43,8 @@ namespace MulticastLocalMessage.Servers
                     using (var client = await listener.AcceptTcpClientAsync())
                     using (var stream = client.GetStream())
                     {
-                        Console.WriteLine($"Client connected: {client.Client.RemoteEndPoint}");
+                        string remoteIP = client.Client.RemoteEndPoint.ToString();
+                        //  Console.WriteLine($"Client connected: {client.Client.RemoteEndPoint}");
 
                         // 接收文件头部信息（文件名和长度）
                         var headerBuffer = new byte[HeaderSize];
@@ -108,7 +109,7 @@ namespace MulticastLocalMessage.Servers
                                         currentBytes = totalBytesRead,
                                         totalBytes = fileLength,
                                         state = "传输中",
-                                        msg = $"来自{client.Client.RemoteEndPoint.ToString()}的文件:{fileName}"
+                                        msg = $"来自{remoteIP}的文件:{fileName}"
                                     });
                                 });
                                 // Console.Write($"\rProgress: {totalBytesRead * 100 / fileLength}%");
@@ -121,7 +122,7 @@ namespace MulticastLocalMessage.Servers
                                     currentBytes = totalBytesRead,
                                     totalBytes = fileLength,
                                     state = "传输完成",
-                                    msg = $"来自{client.Client.RemoteEndPoint.ToString()}的文件:{fileName}"
+                                    msg = $"来自{remoteIP}的文件:{fileName}"
                                 });
                             });
                             //Console.WriteLine("\nFile received successfully.");
