@@ -17,7 +17,7 @@
 			<ColumnDefinition Width="*" ></ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		<TabControl Grid.Column="0" Grid.Row="0" Margin="5">
-			<TabItem Header="消息">
+			<TabItem Header="群发消息">
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -49,7 +49,7 @@
 					</StackPanel>
 				</Grid>
 			</TabItem>
-			<TabItem Header="文件">
+			<TabItem Header="单发文件">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"></RowDefinition>
@@ -64,14 +64,15 @@
 					<StackPanel Grid.Column="0" Grid.Row="0" 
 								Grid.ColumnSpan="2"  HorizontalAlignment="Center"
 								Orientation="Horizontal"   >
-						<Button Margin="0,6,6,0"  >扫描局域网用户</Button>
-						<Button Margin="0,6,6,0" >发送文件</Button>
-						<Button Margin="0,6,6,0" >打开文件夹</Button>
+						<Button Margin="0,6,6,0" Name="btn_scan" Click="btn_scan_click" >发现邻居</Button>
+						<Button Margin="0,6,6,0" Name="btn_sendfile" Click="btn_sendfile_click" >发送文件</Button>
+						<Button Margin="0,6,6,0" Name="btn_openfolder" Click="btn_openfolder_click" >打开文件夹</Button>
 					</StackPanel>
 					<Label Grid.Column="0" Grid.Row="1"
 						   Margin="0,6,0,6"
-						   Grid.ColumnSpan="2" >局域网用户</Label>
-					<ListBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
+						   Grid.ColumnSpan="2" >邻居列表</Label>
+					<ListBox Grid.Column="0" Grid.Row="2" 
+							 Name="NeighbourHoodList" Grid.ColumnSpan="2"  ItemsSource="{Binding Neighbourhoods}">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<TextBlock Text="{Binding Name}"/>

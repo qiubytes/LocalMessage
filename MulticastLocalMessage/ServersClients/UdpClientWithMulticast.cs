@@ -1,6 +1,7 @@
 ﻿using Avalonia.Threading;
 using MulticastLocalMessage.Events;
 using MulticastLocalMessage.MsgDto;
+using MulticastLocalMessage.MsgDto.impls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,12 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage
+namespace MulticastLocalMessage.ServersClients
 {
     /// <summary>
-    /// 消息群发
+    /// UdpClient (包括单播、组播)
     /// </summary>
-    public class MulticastHelper
+    public class UdpClientWithMulticast
     {
         private readonly string MulticastAddress = "239.255.255.250"; // 组播地址
         private readonly int MulticastPort = 5000; // 组播端口
@@ -35,8 +36,12 @@ namespace MulticastLocalMessage
         /// 退出组播
         /// </summary>
         public EventHandler<EventArgs>? Exited;
+        /// <summary>
+        /// 发现邻居
+        /// </summary>
+        public EventHandler<NeighbourhoodDiscovered>? Neighbourhooddiscovered;
 
-        public MulticastHelper()
+        public UdpClientWithMulticast()
         {
             udpClient = new UdpClient();
         }
@@ -114,10 +119,31 @@ namespace MulticastLocalMessage
                     Console.WriteLine($"收到来自 {remoteEndpoint} 的消息: {mdtso.Message}");
                     if (mdtso.MsgType == "1")
                     {
+                        MultiCastMsg multiCastMsg = JsonSerializer.Deserialize<MultiCastMsg>(mdtso.Message);
                         //接收事件
                         Dispatcher.UIThread.Post(() =>
                         {
-                            Received?.Invoke(this, new ReceiveMsg() { OriginIp = remoteEndpoint.ToString(), Content = mdtso.Message });
+                            Received?.Invoke(this, new ReceiveMsg() { OriginIp = multiCastMsg.originIp, Content = multiCastMsg.content });
+                        });
+                    }
+                    else if (mdtso.MsgType == "2") //收到发现邻居消息后，自动单播发送 回应消息
+                    {
+                        MessageDataTransfeObject mdtsoreply = new MessageDataTransfeObject()
+                        {
+                            MsgType = "3",
+                            Message = Utils.GetPrimaryIPv4Address().ToString()
+                        };
+                        string message = JsonSerializer.Serialize(mdtsoreply);
+                        byte[] data = Encoding.UTF8.GetBytes(message);
+                        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(mdtso.Message), MulticastPort);//单播源地址发送
+                        udpClient.Send(data, data.Length, endpoint);
+                    }
+                    else if (mdtso.MsgType == "3") //发现邻居回应
+                    {
+                        //发现邻居
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            Neighbourhooddiscovered?.Invoke(this, new NeighbourhoodDiscovered() { NeighbourhoodIp = mdtso.Message });
                         });
                     }
 

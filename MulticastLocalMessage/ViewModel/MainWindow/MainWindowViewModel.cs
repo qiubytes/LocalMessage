@@ -23,5 +23,9 @@ namespace MulticastLocalMessage.ViewModel.MainWindow
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Neighbourhoods"));
             }
         }
+        public MainWindowViewModel()
+        { 
+            neighbourhoods = new System.Collections.ObjectModel.ObservableCollection<Neighbourhood>();
+        }
     }
 }
