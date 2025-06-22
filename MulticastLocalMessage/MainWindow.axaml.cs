@@ -21,7 +21,7 @@ namespace MulticastLocalMessage
     {
         private readonly UdpClientWithMulticast udpclient;
         private readonly FileReceiverServer fileReceiverServer;
-        private readonly FileSenderClient  fileSenderClient;
+        private readonly FileSenderClient fileSenderClient;
         private CancellationTokenSource fileserverCTS;
         public MainWindow()
         {
@@ -107,7 +107,7 @@ namespace MulticastLocalMessage
                 //{
                 //    FileTipsStackPanel.IsVisible = false;
                 //}
-                int current = Convert.ToInt32(Convert.ToDouble(e.currentBytes) / e.totalBytes) * 100;
+                int current = Convert.ToInt32(Convert.ToDecimal(e.currentBytes) / e.totalBytes * 100);
                 FileMsgTips.Content = e.msg + e.state + current.ToString() + "%";
                 progressbar_file.Value = current;
             };
@@ -123,7 +123,7 @@ namespace MulticastLocalMessage
                 //{
                 //    FileTipsStackPanel.IsVisible = false;
                 //}
-                int current = Convert.ToInt32(Convert.ToDouble(e.currentBytes) / e.totalBytes) * 100;
+                int current = Convert.ToInt32(Convert.ToDecimal(e.currentBytes) / e.totalBytes * 100);
                 FileMsgTips.Content = e.msg + e.state + current.ToString() + "%";
                 progressbar_file.Value = current;
             };
@@ -193,7 +193,7 @@ namespace MulticastLocalMessage
             string? filepath = await Utils.SelectSingleFile(this);
             if (!string.IsNullOrEmpty(filepath))
             {
-                
+
                 Neighbourhood neighbour = (Neighbourhood)NeighbourHoodList.SelectedItem;
                 if (neighbour != null)
                 {

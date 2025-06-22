@@ -75,19 +75,20 @@ namespace MulticastLocalMessage.ServersClients
                                 });
                             });
                             // 显示进度
-                            //传输完成
-                            Dispatcher.UIThread.Post(() =>
-                            {
-                                SendProgress?.Invoke(this, new FileSendReceiveProgress()
-                                {
-                                    currentBytes = totalBytesSent,
-                                    totalBytes = fileLength,
-                                    state = "传输完成",
-                                    msg = $"发送给{serverIp}的文件:{fileName}"
-                                });
-                            });
-                            //Console.Write($"进度: {totalBytesSent * 100 / fileLength}%");
+                         
                         }
+                        //传输完成
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            SendProgress?.Invoke(this, new FileSendReceiveProgress()
+                            {
+                                currentBytes = totalBytesSent,
+                                totalBytes = fileLength,
+                                state = "传输完成",
+                                msg = $"发送给{serverIp}的文件:{fileName}"
+                            });
+                        });
+                        //Console.Write($"进度: {totalBytesSent * 100 / fileLength}%");
 
                         Console.WriteLine("发送文件成功");
                     }
