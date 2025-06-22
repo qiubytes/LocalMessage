@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using MulticastLocalMessage.MsgDto;
 using MulticastLocalMessage.MsgDto.impls;
 using MulticastLocalMessage.Servers;
+using MulticastLocalMessage.ServersClients;
 using MulticastLocalMessage.ViewModel.MainWindow;
 using System;
 using System.IO;
@@ -18,20 +19,20 @@ namespace MulticastLocalMessage
 {
     public partial class MainWindow : Window
     {
-        private readonly MulticastHelper _multicastHelper;
+        private readonly UdpClientWithMulticast udpclient;
         private readonly FileReceiverServer fileReceiverServer;
         private CancellationTokenSource fileserverCTS;
         public MainWindow()
         {
             InitializeComponent();
-            _multicastHelper = new MulticastHelper();
+            udpclient = new UdpClientWithMulticast();
             MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
-            mainWindowViewModel.Neighbourhoods = new System.Collections.ObjectModel.ObservableCollection<Neighbourhood>();
-            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.2" });
-            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.3" });
-            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.4" });
-            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.8" });
-            mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.10" });
+            //mainWindowViewModel.Neighbourhoods = new System.Collections.ObjectModel.ObservableCollection<Neighbourhood>();
+            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.2" });
+            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.3" });
+            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.4" });
+            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.8" });
+            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.10" });
             this.DataContext = mainWindowViewModel;
 
             if (Design.IsDesignMode) return;
@@ -57,7 +58,7 @@ namespace MulticastLocalMessage
         {
             base.OnLoaded(e);
             //接收
-            _multicastHelper.Received += (sender, e) =>
+            udpclient.Received += (sender, e) =>
             {
                 txt_rec.Text += $"\r\n------接收消息---来自{e.OriginIp}---\r\n" + $"{e.Content}";
                 var scrollViewer = txt_rec.GetTemplateChildren()
@@ -66,17 +67,25 @@ namespace MulticastLocalMessage
                 scrollViewer?.ScrollToEnd();
             };
             //加入
-            _multicastHelper.Joined += (sender, e) =>
+            udpclient.Joined += (sender, e) =>
             {
                 label_zt.Content = "已加入";
                 btn_send.IsEnabled = true;
             };
-            _multicastHelper.Exited += (sender, e) =>
+            udpclient.Exited += (sender, e) =>
             {
                 label_zt.Content = "未加入";
                 btn_send.IsEnabled = false;
             };
-
+            //发现邻居
+            udpclient.Neighbourhooddiscovered += (sender, e) =>
+            {
+                MainWindowViewModel mwvm = (MainWindowViewModel)this.DataContext;
+                if (!mwvm.Neighbourhoods.Where(o => o.Name == e.NeighbourhoodIp).Any())
+                {
+                    mwvm.Neighbourhoods.Add(new Neighbourhood() { Name = e.NeighbourhoodIp });
+                }
+            };
             btn_send.IsEnabled = false;
         }
         /// <summary>
@@ -88,12 +97,12 @@ namespace MulticastLocalMessage
         {
             if (btn_joingroup.Content == "加入组播")
             {
-                _multicastHelper.JoinMulticastGroup();
+                udpclient.JoinMulticastGroup();
                 btn_joingroup.Content = "退出组播";
             }
             else
             {
-                _multicastHelper.LeaveMulticastGroup();
+                udpclient.LeaveMulticastGroup();
                 btn_joingroup.Content = "加入组播";
             }
         }
@@ -110,7 +119,7 @@ namespace MulticastLocalMessage
                 MsgType = "1",
                 Message = JsonSerializer.Serialize(multiCastMsg)
             };
-            _multicastHelper.SendMulticastMessage(mdtso);
+            udpclient.SendMulticastMessage(mdtso);
 
             txt_rec.Text += "\r\n------已发送消息------\r\n" + txt_send.Text;
             //txt_rec.ScrollToLine(txt_rec.GetLineCount() - 1);
@@ -119,6 +128,16 @@ namespace MulticastLocalMessage
                           .OfType<ScrollViewer>()
                           .FirstOrDefault();
             scrollViewer?.ScrollToEnd();
+        }
+
+        private void btn_scan_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            MessageDataTransfeObject mdtso = new MessageDataTransfeObject()
+            {
+                MsgType = "2",
+                Message = Utils.GetPrimaryIPv4Address().ToString()
+            };
+            udpclient.SendMulticastMessage(mdtso);
         }
     }
 }
