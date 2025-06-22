@@ -4,11 +4,13 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using MulticastLocalMessage.MsgDto;
+using MulticastLocalMessage.MsgDto.impls;
 using MulticastLocalMessage.Servers;
 using MulticastLocalMessage.ViewModel.MainWindow;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -98,10 +100,15 @@ namespace MulticastLocalMessage
 
         private void btn_send_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            MultiCastMsg multiCastMsg = new MultiCastMsg()
+            {
+                originIp = Utils.GetPrimaryIPv4Address().ToString(),
+                content = txt_send.Text
+            };
             MessageDataTransfeObject mdtso = new MessageDataTransfeObject()
             {
                 MsgType = "1",
-                Message = txt_send.Text
+                Message = JsonSerializer.Serialize(multiCastMsg)
             };
             _multicastHelper.SendMulticastMessage(mdtso);
 

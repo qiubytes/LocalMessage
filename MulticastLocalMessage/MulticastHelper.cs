@@ -1,6 +1,7 @@
 ﻿using Avalonia.Threading;
 using MulticastLocalMessage.Events;
 using MulticastLocalMessage.MsgDto;
+using MulticastLocalMessage.MsgDto.impls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,10 +115,11 @@ namespace MulticastLocalMessage
                     Console.WriteLine($"收到来自 {remoteEndpoint} 的消息: {mdtso.Message}");
                     if (mdtso.MsgType == "1")
                     {
+                        MultiCastMsg multiCastMsg = JsonSerializer.Deserialize<MultiCastMsg>(mdtso.Message);
                         //接收事件
                         Dispatcher.UIThread.Post(() =>
                         {
-                            Received?.Invoke(this, new ReceiveMsg() { OriginIp = remoteEndpoint.ToString(), Content = mdtso.Message });
+                            Received?.Invoke(this, new ReceiveMsg() { OriginIp = multiCastMsg.originIp, Content = multiCastMsg.content });
                         });
                     }
 
