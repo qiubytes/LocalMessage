@@ -13,7 +13,8 @@ namespace LocalMessage.MsgDto
     public class MessageDataTransfeObject
     {
         /// <summary>
-        /// 消息类型 1、群发组播消息 2、发现组播邻居 3、发现组播邻居（回应）,4、Udp单发消息
+        /// 消息类型 1、群发组播消息 2、发现组播邻居 3、发现组播邻居（回应）,4、Udp单发消息,5、文件发送请求 6、文件发送请求回应
+        /// 
         /// </summary>
         public string MsgType { get; set; }
         /// <summary>

@@ -40,7 +40,14 @@ namespace LocalMessage.ServersClients
         /// 发现邻居
         /// </summary>
         public EventHandler<NeighbourhoodDiscovered>? Neighbourhooddiscovered;
-
+        /// <summary>
+        /// 发送文件请求
+        /// </summary>
+        public EventHandler<FileSendApply>? FileSendApplied;
+        /// <summary>
+        /// 发送文件请求响应
+        /// </summary>
+        public EventHandler<FileSendReply>? FileSendReplied;
         public UdpClientWithMulticast()
         {
             udpClient = new UdpClient();
@@ -110,6 +117,27 @@ namespace LocalMessage.ServersClients
             }
         }
         /// <summary>
+        /// 单播发送消息
+        /// </summary>
+        /// <param name="msgobj"></param>
+        /// <param name="IPAddress"></param>
+        /// <param name=""></param>
+        public void Send(MessageDataTransfeObject msgobj,string IpAddress)
+        {
+            try
+            {
+                string message = JsonSerializer.Serialize(msgobj);
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                IPEndPoint multicastEndpoint = new IPEndPoint(IPAddress.Parse(IpAddress), MulticastPort);
+                udpClient.Send(data, data.Length, multicastEndpoint);
+                Console.WriteLine($"已发送消息: {message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"发送消息时出错: {ex.Message}");
+            }
+        }
+        /// <summary>
         /// 接收消息
         /// </summary>
         public void ReceiveMessages()
@@ -150,6 +178,22 @@ namespace LocalMessage.ServersClients
                         Dispatcher.UIThread.Post(() =>
                         {
                             Neighbourhooddiscovered?.Invoke(this, new NeighbourhoodDiscovered() { NeighbourhoodIp = mdtso.Message });
+                        });
+                    }
+                    else if (mdtso.MsgType == "5")//发送文件请求
+                    {
+                        FileSendApply? fileSendApply = JsonSerializer.Deserialize<FileSendApply>(mdtso.Message);
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            FileSendApplied?.Invoke(this, fileSendApply);
+                        });
+                    }
+                    else if (mdtso.MsgType == "6") //接收文件请求
+                    {
+                        FileSendReply? fileSendReply = JsonSerializer.Deserialize<FileSendReply>(mdtso.Message);
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            FileSendReplied?.Invoke(this, fileSendReply);
                         });
                     }
 
