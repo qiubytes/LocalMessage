@@ -1,4 +1,4 @@
-using MulticastLocalMessage.ServersClients;
+using LocalMessage.ServersClients;
 using System.Threading.Tasks;
 
 namespace NUnitTest

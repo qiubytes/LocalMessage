@@ -1,6 +1,6 @@
 ﻿using Avalonia.Threading;
-using MulticastLocalMessage.Events;
-using MulticastLocalMessage.Servers;
+using LocalMessage.Events;
+using LocalMessage.Servers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage.ServersClients
+namespace LocalMessage.ServersClients
 {
     /// <summary>
     /// 文件发送客户端

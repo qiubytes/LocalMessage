@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage.MsgDto
+namespace LocalMessage.MsgDto
 {
     /// <summary>
     /// 除了文件传输、其余消息都需要解析为这个类型

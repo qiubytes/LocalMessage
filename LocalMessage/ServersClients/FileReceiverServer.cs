@@ -1,5 +1,5 @@
 ﻿using Avalonia.Threading;
-using MulticastLocalMessage.Events;
+using LocalMessage.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage.Servers
+namespace LocalMessage.Servers
 {
     public class FileReceiverServer
     {

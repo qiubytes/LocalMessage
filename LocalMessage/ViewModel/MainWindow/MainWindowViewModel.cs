@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage.ViewModel.MainWindow
+namespace LocalMessage.ViewModel.MainWindow
 {
     /// <summary>
     /// 主页的ViewModel

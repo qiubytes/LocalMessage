@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage.MsgDto.impls
+namespace LocalMessage.MsgDto.impls
 {
     /// <summary>
     ///  1、群发组播消息
