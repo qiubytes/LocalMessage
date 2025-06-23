@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia;
 
-namespace MulticastLocalMessage
+namespace LocalMessage
 {
     internal class Program
     {

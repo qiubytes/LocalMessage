@@ -1,4 +1,4 @@
-﻿using MulticastLocalMessage;
+﻿using LocalMessage;
 using System.Net.Sockets;
 
 namespace NUnitTest;

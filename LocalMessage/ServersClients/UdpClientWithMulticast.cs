@@ -1,7 +1,7 @@
 ﻿using Avalonia.Threading;
-using MulticastLocalMessage.Events;
-using MulticastLocalMessage.MsgDto;
-using MulticastLocalMessage.MsgDto.impls;
+using LocalMessage.Events;
+using LocalMessage.MsgDto;
+using LocalMessage.MsgDto.impls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage.ServersClients
+namespace LocalMessage.ServersClients
 {
     /// <summary>
     /// UdpClient (包括单播、组播)

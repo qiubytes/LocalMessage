@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MulticastLocalMessage
+namespace LocalMessage
 {
     /// <summary>
     /// 辅助工具类

@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
 		Width="600"
 		Height="400"
-        x:Class="MulticastLocalMessage.MainWindow"
+        x:Class="LocalMessage.MainWindow"
 		x:CompileBindings="False"
 		WindowStartupLocation="CenterScreen"
         Title="内网消息工具">
