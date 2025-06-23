@@ -11,12 +11,20 @@
         Title="内网消息工具">
 	<Grid>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*" ></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" ></ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		<TabControl Grid.Column="0" Grid.Row="0" Margin="5">
+		<!--第一行-->
+		<StackPanel Orientation="Horizontal"  Grid.Row="0"     HorizontalAlignment="Left" Margin="12,12,12,6"   >
+			<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">加入组播</Button>
+			<Label VerticalAlignment="Center">状态：</Label>
+			<Label Name="label_zt"  Foreground="Red" VerticalAlignment="Center">未加入</Label>
+		</StackPanel>
+
+		<TabControl Grid.Column="0" Grid.Row="1" Margin="5">
 			<TabItem Header="群发消息">
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -32,12 +40,7 @@
 						<RowDefinition Height="*" ></RowDefinition>
 						<RowDefinition Height="Auto" ></RowDefinition>
 					</Grid.RowDefinitions>
-					<!--第一行-->
-					<StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.ColumnSpan="3"   HorizontalAlignment="Center" Margin="0,6,0,0"  >
-						<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">加入组播</Button>
-						<Label VerticalAlignment="Center">状态：</Label>
-						<Label Name="label_zt"  Foreground="Red" VerticalAlignment="Center">未加入</Label>
-					</StackPanel>
+
 					<!--第二行-->
 					<Label Grid.Row="1" Grid.ColumnSpan="3" Margin="6,0,6,0">发送消息：</Label>
 					<TextBox Grid.Row="2" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_send" ></TextBox>
@@ -90,8 +93,16 @@
 				</Grid>
 
 			</TabItem>
-			<TabItem Header="关于本程序">
-				<TextBlock Margin="5">作者：邱于涵,yuhandev@163.com</TextBlock>
+			<TabItem Header="关于">
+				<StackPanel>
+					<TextBlock Margin="5" FontSize="18" FontWeight="Bold">一、功能介绍</TextBlock>
+					<TextBlock Margin="5">1、开源、跨平台，支持Windows、Linux</TextBlock>
+					<TextBlock Margin="5">2、局域网消息群发</TextBlock>
+					<TextBlock Margin="5">3、局域网文件传输</TextBlock>
+					<TextBlock Margin="5" FontSize="18" FontWeight="Bold">二、作者信息</TextBlock>
+					<TextBlock Margin="5">作者：qiubytes    yuhandev@163.com</TextBlock>
+					<TextBlock Margin="5" Tapped="githuburl_tapped" Text="https://github.com/qiubytes/LocalMessage" Foreground="Blue" > </TextBlock>
+				</StackPanel>
 			</TabItem>
 		</TabControl>
 	</Grid>

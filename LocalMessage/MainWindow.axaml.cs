@@ -9,6 +9,7 @@ using LocalMessage.Servers;
 using LocalMessage.ServersClients;
 using LocalMessage.ViewModel.MainWindow;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -200,6 +201,15 @@ namespace LocalMessage
                     await fileSenderClient.SendFile(neighbour.Name, 8082, filepath);
                 }
             }
+        }
+
+        private void githuburl_tapped(object? sender, Avalonia.Input.TappedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/qiubytes/LocalMessage",
+                UseShellExecute = true
+            });
         }
     }
 }
