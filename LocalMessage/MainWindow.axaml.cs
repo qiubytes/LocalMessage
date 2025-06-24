@@ -173,7 +173,7 @@ namespace LocalMessage
                 {
                     FileMsgTips.Content = $"对方已拒绝！";
                 }
-                
+
             };
             btn_send.IsEnabled = false;
         }
@@ -330,6 +330,11 @@ namespace LocalMessage
             fileSendReply.IsReply = false;
             mdto.Message = JsonSerializer.Serialize(fileSendReply);
             udpclient.Send(mdto, keyValuePairsFileApply.FirstOrDefault().Key.originIp);
+            //拒绝后提示
+            btn_file_accept.IsVisible = false;
+            btn_file_reject.IsVisible = false;
+            FileTipsStackPanel.IsVisible = true;
+            FileMsgTips.Content = $"已拒绝";
         }
     }
 }
