@@ -86,8 +86,8 @@
 								Name="FileTipsStackPanel"
 								>
 						<Label VerticalAlignment="Center" Name="FileMsgTips">是否接收xxxx的文件xxxx</Label>
-						<Button Margin="0,5,5,0" Name="btn_file_accept">接受</Button>
-						<Button Margin="0,5,5,0" Name="btn_file_reject">拒绝</Button>
+						<Button Margin="0,5,5,0" Name="btn_file_accept" Click="btn_file_accept_click">接受</Button>
+						<Button Margin="0,5,5,0" Name="btn_file_reject" Click="btn_file_reject_click">拒绝</Button>
 						<ProgressBar Minimum="0" Maximum="100" Name="progressbar_file" ></ProgressBar>
 					</StackPanel>
 				</Grid>

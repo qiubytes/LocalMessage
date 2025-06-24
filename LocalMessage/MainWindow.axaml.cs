@@ -9,6 +9,7 @@ using LocalMessage.Servers;
 using LocalMessage.ServersClients;
 using LocalMessage.ViewModel.MainWindow;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,21 +21,39 @@ namespace LocalMessage
 {
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// UDP客户端
+        /// </summary>
         private readonly UdpClientWithMulticast udpclient;
+        /// <summary>
+        /// 文件接收服务
+        /// </summary>
         private readonly FileReceiverServer fileReceiverServer;
+        /// <summary>
+        /// 文件发送服务
+        /// </summary>
         private readonly FileSenderClient fileSenderClient;
+        /// <summary>
+        /// CancelToken
+        /// </summary>
         private CancellationTokenSource fileserverCTS;
+        /// <summary>
+        /// 定时器
+        /// </summary>
+        private System.Timers.Timer timer;
+        /// <summary>
+        /// 定时器开始时间
+        /// </summary>
+        private DateTime timerStartTime;
+        /// <summary>
+        /// 文件发送请求键值对，存消息ID、文件路径
+        /// </summary>
+        private Dictionary<FileSendApply, string> keyValuePairsFileApply = new Dictionary<FileSendApply, string>();
         public MainWindow()
         {
             InitializeComponent();
             udpclient = new UdpClientWithMulticast();
             MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
-            //mainWindowViewModel.Neighbourhoods = new System.Collections.ObjectModel.ObservableCollection<Neighbourhood>();
-            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.2" });
-            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.3" });
-            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.4" });
-            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.8" });
-            //mainWindowViewModel.Neighbourhoods.Add(new Neighbourhood() { Name = "192.168.1.10" });
             this.DataContext = mainWindowViewModel;
 
             if (Design.IsDesignMode) return;
@@ -128,6 +147,34 @@ namespace LocalMessage
                 FileMsgTips.Content = e.msg + e.state + current.ToString() + "%";
                 progressbar_file.Value = current;
             };
+            //收到文件发送请求
+            udpclient.FileSendApplied += (sender, e) =>
+            {
+                //显示操作按钮进行操作
+                btn_file_accept.IsVisible = true;
+                btn_file_reject.IsVisible = true;
+                FileTipsStackPanel.IsVisible = true;
+                FileMsgTips.Content = $"{e.originIp}正在给您发送{e.FileName},是否同意？";
+                progressbar_file.Value = 0;
+                keyValuePairsFileApply.Clear();
+                keyValuePairsFileApply.Add(e, string.Empty);
+            };
+            //收到文件发送请求响应
+            udpclient.FileSendReplied += async (sender, e) =>
+            {
+                if (e.IsReply)
+                {
+                    //同意发送
+                    FileSendApply reply = keyValuePairsFileApply.Keys.Where(o => o.MsgID == e.RelationMsgID).FirstOrDefault();
+                    if (reply == null) return;
+                    await fileSenderClient.SendFile(reply.destIp, 8082, keyValuePairsFileApply[reply]);
+                }
+                else
+                {
+                    FileMsgTips.Content = $"对方已拒绝！";
+                }
+
+            };
             btn_send.IsEnabled = false;
         }
         /// <summary>
@@ -183,12 +230,20 @@ namespace LocalMessage
             };
             udpclient.SendMulticastMessage(mdtso);
         }
-
+        /// <summary>
+        /// 打开文件夹
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_openfolder_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             Utils.OpenFolderInFileManager(Path.Combine(AppContext.BaseDirectory, "files"));
         }
-
+        /// <summary>
+        /// 发送文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btn_sendfile_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             string? filepath = await Utils.SelectSingleFile(this);
@@ -198,11 +253,46 @@ namespace LocalMessage
                 Neighbourhood neighbour = (Neighbourhood)NeighbourHoodList.SelectedItem;
                 if (neighbour != null)
                 {
-                    await fileSenderClient.SendFile(neighbour.Name, 8082, filepath);
+                    // await fileSenderClient.SendFile(neighbour.Name, 8082, filepath);
+                    //显示下面的进度确认栏
+                    btn_file_accept.IsVisible = false;
+                    btn_file_reject.IsVisible = false;
+                    FileTipsStackPanel.IsVisible = true;
+                    FileMsgTips.Content = "等待对方确认！";
+                    progressbar_file.Value = 0;
+                    //发送文件请求
+                    MessageDataTransfeObject mdto = new MessageDataTransfeObject();
+                    mdto.MsgType = "5";
+                    FileSendApply fileSendApply = new FileSendApply();
+                    fileSendApply.originIp = Utils.GetPrimaryIPv4Address().ToString();
+                    fileSendApply.destIp = neighbour.Name;
+                    fileSendApply.MsgID = Guid.NewGuid().ToString();
+                    fileSendApply.FileName = Path.GetFileName(filepath);
+                    mdto.Message = JsonSerializer.Serialize(fileSendApply);
+                    //存入请求键值对
+                    keyValuePairsFileApply.Add(fileSendApply, filepath);
+                    udpclient.Send(mdto, fileSendApply.destIp);
+                    //定时器
+                    //timer = new System.Timers.Timer();
+                    //timer.Interval = 30 * 1000;
+                    //timer.Elapsed += (sender, e) =>
+                    //{
+                    //    timer.Stop();
+                    //    btn_file_accept.IsVisible = false;
+                    //    btn_file_reject.IsVisible = false;
+                    //    FileTipsStackPanel.IsVisible = false;
+                    //    keyValuePairsFileApply.Clear();
+                    //};
                 }
             }
         }
 
+
+        /// <summary>
+        /// 跳转URL
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void githuburl_tapped(object? sender, Avalonia.Input.TappedEventArgs e)
         {
             Process.Start(new ProcessStartInfo
@@ -210,6 +300,41 @@ namespace LocalMessage
                 FileName = "https://github.com/qiubytes/LocalMessage",
                 UseShellExecute = true
             });
+        }
+        /// <summary>
+        /// 接受文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_file_accept_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            MessageDataTransfeObject mdto = new MessageDataTransfeObject();
+            mdto.MsgType = "6";
+            FileSendReply fileSendReply = new FileSendReply();
+            fileSendReply.RelationMsgID = keyValuePairsFileApply.FirstOrDefault().Key.MsgID;
+            fileSendReply.IsReply = true;
+            mdto.Message = JsonSerializer.Serialize(fileSendReply);
+            udpclient.Send(mdto, keyValuePairsFileApply.FirstOrDefault().Key.originIp);
+        }
+        /// <summary>
+        /// 拒绝文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_file_reject_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            MessageDataTransfeObject mdto = new MessageDataTransfeObject();
+            mdto.MsgType = "6";
+            FileSendReply fileSendReply = new FileSendReply();
+            fileSendReply.RelationMsgID = keyValuePairsFileApply.FirstOrDefault().Key.MsgID;
+            fileSendReply.IsReply = false;
+            mdto.Message = JsonSerializer.Serialize(fileSendReply);
+            udpclient.Send(mdto, keyValuePairsFileApply.FirstOrDefault().Key.originIp);
+            //拒绝后提示
+            btn_file_accept.IsVisible = false;
+            btn_file_reject.IsVisible = false;
+            FileTipsStackPanel.IsVisible = true;
+            FileMsgTips.Content = $"已拒绝";
         }
     }
 }
