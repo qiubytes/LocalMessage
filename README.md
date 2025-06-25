@@ -3,7 +3,7 @@
 * 项目运行截图：Win10 Win11🪟
   ![请求确认](./docs/assets/jt1.PNG)
   ![请求确认](./docs/assets/jt2.png)
-* deepin25
+* deepin25🐧
 ```
 # 查看当前DPI设置
 xrdb -query | grep Xft.dpi
