@@ -176,6 +176,10 @@ namespace LocalMessage
 
             };
             btn_send.IsEnabled = false;
+
+            //默认加入组播
+            udpclient.JoinMulticastGroup();
+            btn_joingroup.Content = "退出组播";
         }
         /// <summary>
         /// 加入组播
