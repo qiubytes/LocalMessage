@@ -8,7 +8,7 @@
         x:Class="LocalMessage.MainWindow"
 		x:CompileBindings="False"
 		WindowStartupLocation="CenterScreen"
-        Title="内网消息工具">
+        Title="LocalMessage-内网消息/文件传输工具">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
