@@ -141,7 +141,8 @@
 					<TextBlock Margin="5">2、局域网消息群发</TextBlock>
 					<TextBlock Margin="5">3、局域网文件传输</TextBlock>
 					<TextBlock Margin="5" FontSize="18" FontWeight="Bold">二、作者信息</TextBlock>
-					<TextBlock Margin="5">作者：qiubytes    yuhandev@163.com</TextBlock>
+					<TextBlock Margin="5">作者：qiubytes </TextBlock>
+					<TextBlock Margin="5">yuhandev@163.com</TextBlock>
 					<TextBlock Margin="5" Tapped="githuburl_tapped" Text="https://github.com/qiubytes/LocalMessage" Foreground="Blue" > </TextBlock>
 				</StackPanel>
 			</TabItem>
