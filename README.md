@@ -3,7 +3,9 @@
 * 项目运行截图：Win10 Win11🪟
   ![请求确认](./docs/assets/jietu1.PNG)
   ![请求确认](./docs/assets/jietu2.png)
-* deepin25🐧
+* ubuntu🐧
+  ![请求确认](./docs/assets/jietu3.PNG)
+  ![请求确认](./docs/assets/jietu4.png)
 ```
 # 查看当前DPI设置
 xrdb -query | grep Xft.dpi

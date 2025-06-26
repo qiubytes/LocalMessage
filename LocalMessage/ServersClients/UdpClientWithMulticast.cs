@@ -20,7 +20,7 @@ namespace LocalMessage.ServersClients
     /// </summary>
     public class UdpClientWithMulticast
     {
-        private readonly string MulticastAddress = "239.255.255.250"; // 组播地址
+        //private readonly string MulticastAddress = "239.255.255.250"; // 组播地址
         private readonly int MulticastPort = 5000; // 组播端口
         private bool isRunning = true;
         private UdpClient udpClient;
@@ -76,8 +76,8 @@ namespace LocalMessage.ServersClients
                 //udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MulticastPort));
                 // 加入组播组
                 // udpClient.MulticastLoopback = false;
-                udpClient.JoinMulticastGroup(IPAddress.Parse(MulticastAddress), localAddress: Utils.GetPrimaryIPv4Address());//指定IP（网卡），组播订阅可能绑定到错误的网卡
-                Console.WriteLine($"已加入组播组 {MulticastAddress}:{MulticastPort}");
+                //udpClient.JoinMulticastGroup(IPAddress.Broadcast, localAddress: Utils.GetPrimaryIPv4Address());//指定IP（网卡），组播订阅可能绑定到错误的网卡
+                Console.WriteLine($"已加入组播组 {IPAddress.Broadcast}:{MulticastPort}");
 
                 Joined?.Invoke(this, EventArgs.Empty);
                 StartThread();
@@ -107,7 +107,7 @@ namespace LocalMessage.ServersClients
             {
                 string message = JsonSerializer.Serialize(msgobj);
                 byte[] data = Encoding.UTF8.GetBytes(message);
-                IPEndPoint multicastEndpoint = new IPEndPoint(IPAddress.Parse(MulticastAddress), MulticastPort);
+                IPEndPoint multicastEndpoint = new IPEndPoint(IPAddress.Broadcast, MulticastPort);
                 udpClient.Send(data, data.Length, multicastEndpoint);
                 Console.WriteLine($"已发送消息: {message}");
             }
@@ -217,10 +217,10 @@ namespace LocalMessage.ServersClients
             {
                 if (udpClient != null)
                 {
-                    udpClient.DropMulticastGroup(IPAddress.Parse(MulticastAddress));
+                    udpClient.DropMulticastGroup(IPAddress.Broadcast);
                     udpClient.Close();
                     udpClient = null;
-                    Console.WriteLine($"已退出组播组 {MulticastAddress}:{MulticastPort}");
+                    Console.WriteLine($"已退出组播组 {IPAddress.Broadcast}:{MulticastPort}");
                     Exited?.Invoke(this, EventArgs.Empty);
                 }
             }
