@@ -1,4 +1,5 @@
 ﻿using Avalonia.Threading;
+using LocalMessage.Config;
 using LocalMessage.Events;
 using LocalMessage.MsgDto;
 using LocalMessage.MsgDto.impls;
@@ -20,7 +21,7 @@ namespace LocalMessage.ServersClients
     /// </summary>
     public class UdpClientWithMulticast
     {
-        //private readonly string MulticastAddress = "239.255.255.250"; // 组播地址
+        private readonly string MulticastAddress = "239.255.255.249"; // 组播地址
         private readonly int MulticastPort = 5000; // 组播端口
         private bool isRunning = true;
         private UdpClient udpClient;
@@ -76,8 +77,15 @@ namespace LocalMessage.ServersClients
                 //udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MulticastPort));
                 // 加入组播组
                 // udpClient.MulticastLoopback = false;
-                //udpClient.JoinMulticastGroup(IPAddress.Broadcast, localAddress: Utils.GetPrimaryIPv4Address());//指定IP（网卡），组播订阅可能绑定到错误的网卡
-                Console.WriteLine($"已加入组播组 {IPAddress.Broadcast}:{MulticastPort}");
+                if (ConfigHelper.GetNetType() == NetType.Multicast)
+                {
+                    udpClient.JoinMulticastGroup(IPAddress.Parse(MulticastAddress), localAddress: Utils.GetPrimaryIPv4Address());//指定IP（网卡），组播订阅可能绑定到错误的网卡
+                    Console.WriteLine($"已加入组播组 {MulticastAddress}:{MulticastPort}");
+                }
+                else
+                {
+                    Console.WriteLine($"监听广播地址 {IPAddress.Broadcast}:{MulticastPort}");
+                }
 
                 Joined?.Invoke(this, EventArgs.Empty);
                 StartThread();
@@ -107,7 +115,16 @@ namespace LocalMessage.ServersClients
             {
                 string message = JsonSerializer.Serialize(msgobj);
                 byte[] data = Encoding.UTF8.GetBytes(message);
-                IPEndPoint multicastEndpoint = new IPEndPoint(IPAddress.Broadcast, MulticastPort);
+                IPEndPoint multicastEndpoint = null;
+                if (ConfigHelper.GetNetType() == NetType.Multicast)
+                {
+                    multicastEndpoint = new IPEndPoint(IPAddress.Parse(MulticastAddress), MulticastPort);
+
+                }
+                else
+                {
+                    multicastEndpoint = new IPEndPoint(IPAddress.Broadcast, MulticastPort);
+                }
                 udpClient.Send(data, data.Length, multicastEndpoint);
                 Console.WriteLine($"已发送消息: {message}");
             }
@@ -122,7 +139,7 @@ namespace LocalMessage.ServersClients
         /// <param name="msgobj"></param>
         /// <param name="IPAddress"></param>
         /// <param name=""></param>
-        public void Send(MessageDataTransfeObject msgobj,string IpAddress)
+        public void Send(MessageDataTransfeObject msgobj, string IpAddress)
         {
             try
             {
@@ -217,11 +234,22 @@ namespace LocalMessage.ServersClients
             {
                 if (udpClient != null)
                 {
-                    udpClient.DropMulticastGroup(IPAddress.Broadcast);
-                    udpClient.Close();
-                    udpClient = null;
-                    Console.WriteLine($"已退出组播组 {IPAddress.Broadcast}:{MulticastPort}");
-                    Exited?.Invoke(this, EventArgs.Empty);
+                    if (ConfigHelper.GetNetType() == NetType.Multicast)
+                    {
+                        udpClient.DropMulticastGroup(IPAddress.Parse(MulticastAddress));
+                        udpClient.Close();
+                        udpClient = null;
+                        Console.WriteLine($"已退出组播组 {MulticastAddress}:{MulticastPort}");
+                        Exited?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        udpClient.DropMulticastGroup(IPAddress.Broadcast);
+                        udpClient.Close();
+                        udpClient = null;
+                        //  Console.WriteLine($"已退出组播组 {IPAddress.Broadcast}:{MulticastPort}");
+                        Exited?.Invoke(this, EventArgs.Empty);
+                    } 
                 }
             }
             catch (Exception ex)
