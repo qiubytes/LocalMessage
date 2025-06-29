@@ -1,9 +1,11 @@
 ## .NET8 + AvaloniaUI 11的局域网消息群发、文件收发工具
 
 * 项目运行截图：Win10 Win11🪟
-  ![请求确认](./docs/assets/jt1.PNG)
-  ![请求确认](./docs/assets/jt2.png)
-* deepin25🐧
+  ![请求确认](./docs/assets/jietu1.png)
+  ![请求确认](./docs/assets/jietu2.png)
+* ubuntu🐧
+  ![请求确认](./docs/assets/jietu3.png)
+  ![请求确认](./docs/assets/jietu4.png)
 ```
 # 查看当前DPI设置
 xrdb -query | grep Xft.dpi

@@ -2,13 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="430"
 		Width="600"
-		Height="400"
+		Height="430"
         x:Class="LocalMessage.MainWindow"
 		x:CompileBindings="False"
 		WindowStartupLocation="CenterScreen"
-        Title="内网消息工具">
+        Title="LocalMessage-内网消息/文件传输工具">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
@@ -18,13 +18,52 @@
 			<ColumnDefinition Width="*" ></ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		<!--第一行-->
-		<StackPanel Orientation="Horizontal"  Grid.Row="0"     HorizontalAlignment="Left" Margin="12,12,12,6"   >
-			<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">加入组播</Button>
+		<StackPanel Orientation="Horizontal"  Grid.Row="0"     HorizontalAlignment="Center" Margin="12,12,12,6"   >
+			<Button Name="btn_joingroup" Click="btn_joingroup_Click_1">
+				<Button.Styles>
+					<Style Selector="Button">
+						<!-- 禁用默认的悬停/按下效果 -->
+						<Setter Property="Background" Value="Transparent" />
+						<Setter Property="BorderBrush" Value="Transparent" />
+						<Setter Property="Template">
+							<ControlTemplate>
+								<!-- 只显示自定义内容，不添加额外样式 -->
+								<ContentPresenter Content="{TemplateBinding Content}" />
+							</ControlTemplate>
+						</Setter>
+					</Style>
+				</Button.Styles>
+				<Border CornerRadius="100" Background="DodgerBlue" Width="80" Height="80">
+					<TextBlock Text="加入组播" Name="btn_joingroup_text" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+				</Border>
+			</Button>
 			<Label VerticalAlignment="Center">状态：</Label>
 			<Label Name="label_zt"  Foreground="Red" VerticalAlignment="Center">未加入</Label>
 		</StackPanel>
 
 		<TabControl Grid.Column="0" Grid.Row="1" Margin="5">
+			<TabControl.Styles>
+				<!-- 修改 TabItem 样式 -->
+				<Style Selector="TabItem">
+					<Setter Property="Foreground" Value="#333" />
+					<Setter Property="FontSize" Value="14" />
+					<Setter Property="Padding" Value="15,10" />
+					<Setter Property="BorderBrush" Value="Transparent" />
+				</Style>
+
+				<!-- 选中 Tab 样式 -->
+				<Style Selector="TabItem:selected">
+					<Setter Property="Foreground" Value="#1E90FF" />
+					<!-- DodgerBlue -->
+					<Setter Property="FontWeight" Value="Bold" />
+				</Style>
+				<!-- 悬停 Tab 样式 -->
+				<Style Selector="TabItem:pointerover">
+					<Setter Property="Background" Value="#F0F5FF" />
+					<!-- 浅蓝悬停背景 -->
+				</Style>
+
+			</TabControl.Styles>
 			<TabItem Header="群发消息">
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -42,17 +81,17 @@
 					</Grid.RowDefinitions>
 
 					<!--第二行-->
-					<Label Grid.Row="1" Grid.ColumnSpan="3" Margin="6,0,6,0">发送消息：</Label>
-					<TextBox Grid.Row="2" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_send" ></TextBox>
+					<Label Grid.Row="1" Grid.ColumnSpan="3" Margin="6,12,6,0">发送消息：</Label>
+					<TextBox Grid.Row="2" Classes="TextArea"  Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_send" ></TextBox>
 					<Label Grid.Row="3" Grid.ColumnSpan="3" Margin="6,0,6,0">接收消息：</Label>
-					<TextBox Grid.Row="4" Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_rec" ></TextBox>
+					<TextBox Grid.Row="4" Classes="TextArea"  Grid.ColumnSpan="3"  Margin="6,6,6,0" Name="txt_rec" ></TextBox>
 					<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="6,0,6,0"  Orientation="Horizontal" HorizontalAlignment="Right" >
 						<Button Name="btn_send" Margin="0,6,0,6" Click="btn_send_Click_1" >发送</Button>
 						<Button Name="btn_close" Margin="12,6,0,6" Click="Button_btn_close_Click">关闭</Button>
 					</StackPanel>
 				</Grid>
 			</TabItem>
-			<TabItem Header="单发文件">
+			<TabItem Header="单发文件" >
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"></RowDefinition>
@@ -66,7 +105,9 @@
 					</Grid.ColumnDefinitions>
 					<StackPanel Grid.Column="0" Grid.Row="0"
 								Grid.ColumnSpan="2"  HorizontalAlignment="Center"
-								Orientation="Horizontal"   >
+								Orientation="Horizontal"
+							    Margin="6,12,6,0"
+								>
 						<Button Margin="0,6,6,0" Name="btn_scan" Click="btn_scan_click" >发现邻居</Button>
 						<Button Margin="0,6,6,0" Name="btn_sendfile" Click="btn_sendfile_click" >发送文件</Button>
 						<Button Margin="0,6,6,0" Name="btn_openfolder" Click="btn_openfolder_click" >打开文件夹</Button>
@@ -94,13 +135,14 @@
 
 			</TabItem>
 			<TabItem Header="关于">
-				<StackPanel>
+				<StackPanel Margin="6,12,6,0">
 					<TextBlock Margin="5" FontSize="18" FontWeight="Bold">一、功能介绍</TextBlock>
 					<TextBlock Margin="5">1、开源、跨平台，支持Windows、Linux</TextBlock>
 					<TextBlock Margin="5">2、局域网消息群发</TextBlock>
 					<TextBlock Margin="5">3、局域网文件传输</TextBlock>
 					<TextBlock Margin="5" FontSize="18" FontWeight="Bold">二、作者信息</TextBlock>
-					<TextBlock Margin="5">作者：qiubytes    yuhandev@163.com</TextBlock>
+					<TextBlock Margin="5">作者：qiubytes </TextBlock>
+					<TextBlock Margin="5">yuhandev@163.com</TextBlock>
 					<TextBlock Margin="5" Tapped="githuburl_tapped" Text="https://github.com/qiubytes/LocalMessage" Foreground="Blue" > </TextBlock>
 				</StackPanel>
 			</TabItem>

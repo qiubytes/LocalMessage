@@ -179,7 +179,7 @@ namespace LocalMessage
 
             //默认加入组播
             udpclient.JoinMulticastGroup();
-            btn_joingroup.Content = "退出组播";
+            btn_joingroup_text.Text = "退出组播";
         }
         /// <summary>
         /// 加入组播
@@ -188,15 +188,15 @@ namespace LocalMessage
         /// <param name="e"></param>
         private void btn_joingroup_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (btn_joingroup.Content == "加入组播")
+            if (btn_joingroup_text.Text == "加入组播")
             {
                 udpclient.JoinMulticastGroup();
-                btn_joingroup.Content = "退出组播";
+                btn_joingroup_text.Text = "退出组播";
             }
             else
             {
                 udpclient.LeaveMulticastGroup();
-                btn_joingroup.Content = "加入组播";
+                btn_joingroup_text.Text = "加入组播";
             }
         }
 
